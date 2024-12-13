@@ -18,9 +18,10 @@ const checkLogin = async () => {
 
     if (response.ok) {
       const data = await response.json();
+      console.log(data)
       if (data.success) {
         isLoggedIn.value = true;
-        name.value = data.user.username;
+        name.value = data.name;
       } else {
         isLoggedIn.value = false;
       }

@@ -1,9 +1,32 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const memberName = ref('John Doe');
+const memberName = ref('');
+
+const getUserInfoById = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/users', {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      if (data.success) {
+        memberName.value = data.user.name;
+      } else {
+        memberName.value = "not found.";
+      }
+    } else {
+      memberName.value = "request error.";
+    }
+  } catch (error) {
+    console.error('Authentication failed:', error);
+  }
+};
 
 const handleLogout = async () => {
   try {
@@ -23,6 +46,10 @@ const handleLogout = async () => {
     console.error('Error during logout:', error);
   }
 };
+
+onMounted(async () => {
+  await getUserInfoById();
+});
 </script>
 
 <template>
