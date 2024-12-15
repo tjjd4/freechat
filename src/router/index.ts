@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
+import { isLogin } from '../api/user';
+
 const routes = [
   {
     path: '/',
@@ -27,12 +29,9 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
     try {
-      const response = await fetch('http://localhost:3000/is_login', {
-        method: 'GET',
-        credentials: 'include', // 確保帶上 Session cookie
-      });
+      const result = await isLogin();
 
-      if (response.ok) {
+      if (result) {
         next();
       } else {
         next({ path: '/' });

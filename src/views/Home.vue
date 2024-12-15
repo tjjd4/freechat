@@ -2,79 +2,58 @@
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { isLogin, loginUser } from '../api/user';
+
 const router = useRouter();
-const account = ref('');
+const username = ref('');
 const password = ref('');
 const isLoggedIn = ref(false);
-const name = ref('');
 const errorMsg = ref('');
 
-const checkLogin = async () => {
+const auth = async () => {
   try {
-    const response = await fetch('http://localhost:3000/is_login', {
-      method: 'GET',
-      credentials: 'include',
-    });
+    const result = await isLogin();
 
-    if (response.ok) {
-      const data = await response.json();
-      console.log(data)
-      if (data.success) {
-        isLoggedIn.value = true;
-        name.value = data.name;
-      } else {
-        isLoggedIn.value = false;
-      }
+    if (result) {
+      isLoggedIn.value = true;
     } else {
       isLoggedIn.value = false;
     }
   } catch (error) {
+    isLoggedIn.value = false;
     console.error('Authentication failed:', error);
   }
 };
 
 const goDashboard = async () => {
-  await checkLogin();
-  if (isLoggedIn) {
+  if (await isLogin()) {
     router.push('/dashboard');
   }
 };
 
 // 處理 Login 按鈕的點擊事件
 const handleLogin = async () => {
-  if (!account.value || !password.value) {
-    alert('Please enter account and password.');
+  if (!username.value || !password.value) {
+    errorMsg.value = 'Please enter account and password.';
     return;
   }
 
   try {
-    const response = await fetch('http://localhost:3000/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        username: account.value,
-        password: password.value,
-      }),
-    });
+    const result = await loginUser(username.value, password.value);
 
-    if (response.ok) {
-      await checkLogin();
-      router.push('/');
+    if (result.success) {
+      auth();
     } else {
-      const error = await response.json();
-      errorMsg.value = error.message;
+      errorMsg.value = result.message;
     }
-  } catch (err) {
-    console.error('API error:', err);
+  } catch (error) {
+    console.error('API error:', error);
     alert('An error occurred while logging in.');
   }
 };
 
 onMounted(async () => {
-  await checkLogin();
+  await auth();
 });
 </script>
 
@@ -84,7 +63,7 @@ onMounted(async () => {
       <!-- Title -->
       <h1 class="text-center text-5xl font-bold">freechat</h1>
       <div v-if="isLoggedIn" class="text-center space-y-3">
-        <p class="text-2xl">Welcome back, {{ name }}!</p>
+        <p class="text-2xl">Pass...</p>
         <button
           type="button"
           class="w-full py-2 bg-white text-black font-bold rounded-md hover:bg-gray-400"
@@ -99,7 +78,7 @@ onMounted(async () => {
         <!-- Account Input -->
         <input
           type="text"
-          v-model="account"
+          v-model="username"
           placeholder="Account"
           class="w-full px-4 py-2 bg-gray-800 rounded-md focus:ring-2 focus:ring-white focus:outline-none"
         />
