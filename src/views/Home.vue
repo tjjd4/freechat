@@ -63,7 +63,7 @@ onMounted(async () => {
       <!-- Title -->
       <h1 class="text-center text-5xl font-bold">freechat</h1>
       <div v-if="isLoggedIn" class="text-center space-y-3">
-        <p class="text-2xl">Pass...</p>
+        <p class="text-2xl">Welcome Back</p>
         <button
           type="button"
           class="w-full py-2 bg-white text-black font-bold rounded-md hover:bg-gray-400"

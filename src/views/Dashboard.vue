@@ -55,15 +55,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-black text-white font-mono flex flex-col items-center justify-center p-4">
+  <div class="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4">
     <main class="w-full max-w-md space-y-8 text-center">
       <!-- Title -->
       <h1 class="text-4xl font-bold tracking-wider mb-12">freechat</h1>
 
       <!-- Welcome Section -->
       <div class="space-y-4">
-        <p class="text-2xl">Welcome,</p>
-        <p class="text-4xl font-bold text-gray-300">{{ memberName }}</p>
+        <p class="text-4xl font-bold text-white"> User: {{ memberName }}</p>
       </div>
 
       <!-- Friend List Section -->
